@@ -48,6 +48,22 @@ for k in range(10):
     po = shapely.geometry.Polygon(coordsalls)
     polyshape.append(po)
 df2 = pd.DataFrame(polyshape)
+
+df2
+Out[7]: 
+                                                   0
+0            POLYGON ((5 5, 10 5, 10 10, 5 10, 5 5))
+1      POLYGON ((15 15, 30 15, 30 30, 15 30, 15 15))
+2      POLYGON ((25 25, 50 25, 50 50, 25 50, 25 25))
+3      POLYGON ((35 35, 70 35, 70 70, 35 70, 35 35))
+4      POLYGON ((45 45, 90 45, 90 90, 45 90, 45 45))
+5  POLYGON ((55 55, 110 55, 110 110, 55 110, 55 55))
+6  POLYGON ((65 65, 130 65, 130 130, 65 130, 65 65))
+7  POLYGON ((75 75, 150 75, 150 150, 75 150, 75 75))
+8  POLYGON ((85 85, 170 85, 170 170, 85 170, 85 85))
+9  POLYGON ((95 95, 190 95, 190 190, 95 190, 95 95))
+
+
 df1 = df2[0].s_apply_each(
     expression="func([x,y]) if x.intersects(y) else x", # use always x/y in your expression
     func=unary_union,
@@ -56,5 +72,19 @@ df1 = df2[0].s_apply_each(
     print_exception=True,
     ignore_exceptions=True
 )
+
+Out[8]: 
+                                                   0  ...                                                  9
+0                                               <NA>  ...            POLYGON ((5 5, 10 5, 10 10, 5 10, 5 5))
+1      POLYGON ((15 15, 30 15, 30 30, 15 30, 15 15))  ...      POLYGON ((15 15, 30 15, 30 30, 15 30, 15 15))
+2      POLYGON ((25 25, 50 25, 50 50, 25 50, 25 25))  ...      POLYGON ((25 25, 50 25, 50 50, 25 50, 25 25))
+3      POLYGON ((35 35, 70 35, 70 70, 35 70, 35 35))  ...      POLYGON ((35 35, 70 35, 70 70, 35 70, 35 35))
+4      POLYGON ((45 45, 90 45, 90 90, 45 90, 45 45))  ...      POLYGON ((45 45, 90 45, 90 90, 45 90, 45 45))
+5  POLYGON ((55 55, 110 55, 110 110, 55 110, 55 55))  ...  POLYGON ((110 55, 55 55, 55 110, 95 110, 95 19...
+6  POLYGON ((65 65, 130 65, 130 130, 65 130, 65 65))  ...  POLYGON ((130 65, 65 65, 65 130, 95 130, 95 19...
+7  POLYGON ((75 75, 150 75, 150 150, 75 150, 75 75))  ...  POLYGON ((150 75, 75 75, 75 150, 95 150, 95 19...
+8  POLYGON ((85 85, 170 85, 170 170, 85 170, 85 85))  ...  POLYGON ((170 85, 85 85, 85 170, 95 170, 95 19...
+9  POLYGON ((95 95, 190 95, 190 190, 95 190, 95 95))  ...                                               <NA>
+[10 rows x 10 columns]
 
 ```
