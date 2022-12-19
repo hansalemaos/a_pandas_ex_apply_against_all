@@ -26,12 +26,22 @@ def series_to_dataframe(
 def apply_each_value_to_whole_column(
     df: pd.Series,
     expression: str,
+    func=None,
     exception_value: Any = pd.NA,
     diagonal_value: Any = pd.NA,
     print_exception: bool = True,
+    ignore_exceptions=True,
 ) -> pd.DataFrame:
     def execute_function(
-        colname, ini_, df, expression, xx, diagonal_value, exception_value=pd.NA
+        colname,
+        ini_,
+        df,
+        expression,
+        xx,
+        diagonal_value,
+        func,
+        exception_value=pd.NA,
+        ignore_exceptions=True,
     ):
         result = []
         for ini, y in zip(df.index, df):
@@ -40,6 +50,8 @@ def apply_each_value_to_whole_column(
                 val = eval(expression) if ini != ini_ else diagonal_value
                 result.append(val)
             except Exception as fe:
+                if not ignore_exceptions:
+                    raise fe
                 if print_exception:
                     print(fe)
                 result.append(exception_value)
@@ -55,7 +67,9 @@ def apply_each_value_to_whole_column(
             expression,
             xx,
             diagonal_value,
+            func,
             exception_value=exception_value,
+            ignore_exceptions=ignore_exceptions,
         ),
         axis=1,
     )
