@@ -33,5 +33,28 @@ print(df1)
 890  8911  8912  8913  8914  8915  ...  891887  891888  891889  891890    <NA>
 [891 rows x 891 columns]
 
+# If you use a non-built-in function, you have to pass it as an argument, and use it as "func" in your expression
+# An example using shapely (merging different polygons)
+
+from shapely.ops import unary_union
+import shapely
+polyshape = []
+for k in range(10):
+    xmin = k * 10 + 5
+    ymin = k * 10 + 5
+    xmax = k * 20 + 10
+    ymax = k * 20 + 10
+    coordsalls = [[xmin, ymin], [xmax, ymin], [xmax, ymax], [xmin, ymax], [xmin, ymin]]
+    po = shapely.geometry.Polygon(coordsalls)
+    polyshape.append(po)
+df2 = pd.DataFrame(polyshape)
+df1 = df2[0].s_apply_each(
+    expression="func([x,y]) if x.intersects(y) else x", # use always x/y in your expression
+    func=unary_union,
+    exception_value=pd.NA,
+    diagonal_value=pd.NA,
+    print_exception=True,
+    ignore_exceptions=True
+)
 
 ```
